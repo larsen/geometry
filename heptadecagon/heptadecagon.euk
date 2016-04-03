@@ -1,0 +1,105 @@
+O = point (2, 2)
+c = circle (O, 2)
+V = point (c, 0 deg)
+A = point (c, 90 deg)
+
+B' = midpoint (O.A)
+B = midpoint (O.B')
+
+ov = line (O, V)
+b' = bisector (O, B, V)
+t = intersection (b', ov)
+b'' = bisector (O, B, t)
+C = intersection (b'', ov)
+
+l = perpendicular ( line (C, B), B )
+b = bisector ( l, line (C, B) )
+D = intersection (b, line (O, V) )
+
+e = circle (D.V)
+ec = intersection (e, O.A)
+E = ec[0]
+% E = intersection (e, O.A)
+
+ccr = length (C.E)
+cc = circle (C, ccr)
+
+fg = intersection (line (O,V), cc)
+F = fg[1]
+G = fg[0]
+f = perpendicular ( line (O, V), F )
+g = perpendicular ( line (O, V), G )
+
+v3s = intersection ( f, c )
+V3 = v3s[1]
+v5s = intersection ( g, c )
+V5 = v5s[1]
+
+v35 = bisector ( V5, O, V3 )
+v4s = intersection ( v35, c )
+V4 = v4s[1]
+
+vertex = length (V3.V4)
+
+cv = circle ( V, vertex )
+v1s = intersection ( cv, c )
+V1 = v1s[1]
+
+cv2 = circle ( V1, vertex )
+v2s = intersection ( cv2, c )
+V2 = v2s[1]
+
+cv6 = circle ( V5, vertex )
+v6s = intersection ( cv6, c )
+V6 = v6s[1]
+
+cv7 = circle ( V6, vertex )
+v7s = intersection ( cv7, c )
+V7 = v7s[1]
+
+vertex_set = set(V)
+current_vertex = V
+for i = 1 to 17
+  cv = circle ( current_vertex, vertex )
+  vs = intersection ( cv, c )
+  nV = vs[1]
+  % draw nV magenta
+  % draw V.nV magenta
+  vertex_set = vertex_set.nV
+  current_vertex = nV
+end
+
+draw lightgray
+  c
+  O.A
+  line (O, V)
+  line (C, B)
+  l ; b
+  e
+  cc
+  F ; G
+  f ; g
+  v35
+end
+
+draw
+  O ; V
+  A ; B ; C ; D ; E
+end
+
+draw green
+  cv
+end
+
+for V in vertex_set
+  draw V magenta
+end
+
+draw vertex_set magenta
+
+label
+  A 45 deg
+  V 0 deg
+  O 270 deg
+  C 45 deg
+end
