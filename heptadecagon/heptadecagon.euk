@@ -1,34 +1,63 @@
-O = point (2, 2)
-c = circle (O, 2)
+% Comments follow Richmond's construction procedure
+% found in http://mathpages.com/home/kmath487.htm
+
+% Draw a circle centered at O, and choose one vertex V on the circle.
+% Then locate the point A on the circle such that OA is perpindicular
+% to OV
+
+O = point (3, 2)
+c = circle (O, 3)
 V = point (c, 0 deg)
+ov = line (O, V)
 A = point (c, 90 deg)
+
+
+% locate point B on OA such that OB is 1/4 of OA
 
 B' = midpoint (O.A)
 B = midpoint (O.B')
 
-ov = line (O, V)
+
+% Then locate the point C on OV such that angle OBC is 1/4 the angle OBV
+
 b' = bisector (O, B, V)
 t = intersection (b', ov)
 b'' = bisector (O, B, t)
 C = intersection (b'', ov)
 
-l = perpendicular ( line (C, B), B )
-b = bisector ( l, line (C, B) )
-D = intersection (b, line (O, V) )
+
+% Then find the point D on OV (extended) such that DBC is half of a right angle
+
+cb = line (C, B)
+l = perpendicular ( cb, B )
+b = bisector ( l, cb )
+D = intersection (b, ov )
+
+
+% Let E denote the point where the circle on DV cuts OA
 
 e = circle (D.V)
 ec = intersection (e, O.A)
 E = ec[0]
-% E = intersection (e, O.A)
+
+
+% Now draw a circle centered at C through the point E
 
 ccr = length (C.E)
 cc = circle (C, ccr)
 
-fg = intersection (line (O,V), cc)
+% let F and G denote
+% the two points where this circle strikes OV
+
+fg = intersection (ov, cc)
 F = fg[1]
 G = fg[0]
-f = perpendicular ( line (O, V), F )
-g = perpendicular ( line (O, V), G )
+f = perpendicular ( ov, F )
+g = perpendicular ( ov, G )
+
+
+% Then, if perpindiculars to OV are drawn at F and G they strike the
+% main circle (the one centered at O through V) at points V3 and V5
 
 v3s = intersection ( f, c )
 V3 = v3s[1]
@@ -41,32 +70,22 @@ V4 = v4s[1]
 
 vertex = length (V3.V4)
 
-cv = circle ( V, vertex )
-v1s = intersection ( cv, c )
-V1 = v1s[1]
-
-cv2 = circle ( V1, vertex )
-v2s = intersection ( cv2, c )
-V2 = v2s[1]
-
-cv6 = circle ( V5, vertex )
-v6s = intersection ( cv6, c )
-V6 = v6s[1]
-
-cv7 = circle ( V6, vertex )
-v7s = intersection ( cv7, c )
-V7 = v7s[1]
-
 vertex_set = set(V)
 current_vertex = V
 for i = 1 to 17
   cv = circle ( current_vertex, vertex )
   vs = intersection ( cv, c )
   nV = vs[1]
-  % draw nV magenta
-  % draw V.nV magenta
   vertex_set = vertex_set.nV
   current_vertex = nV
+end
+
+label
+  A 45 deg
+  V 0 deg
+  O 270 deg
+  F -45 deg
+  G 45 deg
 end
 
 draw lightgray
@@ -79,16 +98,8 @@ draw lightgray
   cc
   F ; G
   f ; g
-  v35
-end
-
-draw
   O ; V
   A ; B ; C ; D ; E
-end
-
-draw green
-  cv
 end
 
 for V in vertex_set
@@ -97,9 +108,3 @@ end
 
 draw vertex_set magenta
 
-label
-  A 45 deg
-  V 0 deg
-  O 270 deg
-  C 45 deg
-end
